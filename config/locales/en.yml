@@ -1346,13 +1346,13 @@ en:
           Our contributors are many, many individuals and organizations. We would
           not exist without their efforts. 
         contributors_at_html: |
-          <b>Software. <a href="https://openstreetmap.org">OpenStreetMap</a>. 
+          <b>Software.</b> <a href="https://openstreetmap.org">OpenStreetMap</a>. 
           OpenHistoricalMap would not exist without the incredible software and 
           ecosystem of tools created by the truly tireless effort of the 
           OpenStreetMap community and the support of the 
           <a href="https://wiki.osmfoundation.org/wiki/Main_Page">OpenStreetMap Foundation</a>. 
         contributors_au_html: |
-          ..
+          <b>Public Domain Data.</b> Natural Earth Data 
         contributors_ca_html: |
           ..
         contributors_fi_html: |
