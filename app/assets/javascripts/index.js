@@ -342,6 +342,22 @@ $(document).ready(function () {
           });
         }
       });
+      setTimeout(addInspector(), 250);
+    }
+
+    //Add the enhanced inspector
+    function addInspector() {
+      var inspector = new openhistoricalmap.OpenHistoricaMapInspector({
+          debug: true,
+          onFeatureFail: function (type, id) {
+              console.log([ 'failed to load feature', type, id ]);
+          },
+          onFeatureLoaded: function (type, id, xmldoc) {
+              console.log([ 'loaded feature', type, id, xmldoc ]);
+          },
+          apiBaseUrl: "https://staging.openhistoricalmap.org/api/"
+      });
+      inspector.selectFeatureFromUrl();
     }
 
     page.unload = function() {
@@ -394,34 +410,68 @@ $(document).ready(function () {
       e.preventDefault();
   });
 
-  // Find the OHM layer
+  // Find the OHM layer (a Leaflet MBGL "layer") by its name matching historicalLayerKey
+  // Define the slider options: default date and min/max date allowable
+  // params come from mapParams() which sets defaults for the map etc.
   var historicalLayerKey = 'historical';
-  var ohmLayer = map._layers[Object.keys(map._layers).filter(function(id) {
-    return map._layers[id].options.keyid === historicalLayerKey;
-  })[0]];
-  var currentYear = (new Date()).getFullYear();
 
-  // Define the slider options
-  var sliderOptions ={
+  var timeSliderHardMaxYear = (new Date()).getFullYear();  // current calendar year
+  var timeSliderHardMinYear = -4000;
+  var timeSliderDateRange = params.daterange.split(',').map(function (i) { return parseInt(i); });
+
+  var sliderOptions = {
     position: 'bottomright',
-    mbgllayer: ohmLayer,
+    mbgllayer: undefined,  // see addTimeSliderToMap() whichy searches for this
     timeSliderOptions: {
       sourcename: "osm",
-      date: 1850,
-      range: [1800, currentYear],
-      datelimit: [-4000, currentYear]
+      date: parseInt(params.date),
+      range: timeSliderDateRange,
+      datelimit: [timeSliderHardMinYear, timeSliderHardMaxYear],
+      onDateSelect: function () {
+        OSM.router.updateHash();
+      },
+      onRangeChange: function () {
+        OSM.router.updateHash();
+      },
+      onReady: function () {
+        OSM.router.updateHash('force');
+      },
     }
+  };
+
+  // add the slider IF the the OSM vector map is the layer showing
+  if (getHistoryLayerIfShowing()) {
+    addTimeSliderToMap(sliderOptions);
   }
 
-  // Add the slider
-  var slider = new L.Control.MBGLTimeSlider(sliderOptions).addTo(map);
+  // when we change to a different basemap, the timeslider (which itself is a MBGL control, the layer is a MBGL map) disappears
+  // fortunately map.timeslider is still defined so we can refer to it for values,
+  // create a new one, and add it to the map
+  map.on('baselayerchange', function () {
+    const usetheslider = getHistoryLayerIfShowing();
+    if (! usetheslider) return;
 
-  // Detect when the baseLayer is changed, and add the slider back in (or store its last state)
-  map.on('baselayerchange', function(e) {
-    sliderOptions.timeSliderOptions.date = slider._timeslider._current_date;
-    if (e.layer.options.keyid === historicalLayerKey) {
-      slider = new L.Control.MBGLTimeSlider(sliderOptions).addTo(map);
+    const newSliderOptions = Object.assign({}, sliderOptions);
+    if (this.timeslider) {
+      newSliderOptions.timeSliderOptions.date = this.timeslider.getDate();
+      newSliderOptions.timeSliderOptions.range = this.timeslider.getRange();
     }
+    addTimeSliderToMap(newSliderOptions);
   });
 
+  // the wrapper function to add the slider to the map
+  // because we need to search for ohmLayer
+  // which will exist & vanish as the basemap changes and when page is first loaded
+  function getHistoryLayerIfShowing () {
+    let ohmlayer;
+    map.eachLayer(function (layer) {
+      if (layer.options.keyid === historicalLayerKey) ohmlayer = layer;
+    });
+    return ohmlayer;
+  }
+  function addTimeSliderToMap (slideroptions) {
+    const ohmlayer = getHistoryLayerIfShowing();
+    slideroptions.mbgllayer = ohmlayer;
+    map.timeslider = new L.Control.MBGLTimeSlider(slideroptions).addTo(map);
+  }
 });
