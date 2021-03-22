@@ -167,7 +167,7 @@ class GeocoderController < ApplicationController
 
     render :action => "results"
   rescue StandardError => ex
-    @error = "Error contacting nominatim.openstreetmap.org: #{ex}"
+    @error = "Error contacting nominatim.openstreetmap.org: #{ex.message} - #{ex.class}"
     render :action => "error"
   end
 
