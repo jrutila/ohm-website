@@ -10,3 +10,7 @@ services:
       - memcached
   memcached:
     image: memcached
+networks:
+  default:
+    external:
+      name: ogm_default

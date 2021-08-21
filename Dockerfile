@@ -9,7 +9,7 @@ RUN apt-get update -qq && \
       wget \
     && rm -rf /var/lib/apt/lists/*
 
-RUN wget -qO- https://deb.nodesource.com/setup_10.x | bash -
+RUN wget -qO- https://deb.nodesource.com/setup_16.x | bash -
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
       apache2 \

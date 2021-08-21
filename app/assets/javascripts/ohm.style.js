@@ -5,10 +5,10 @@ const ohmTileServiceName = window.location.hostname.toLowerCase() == 'localhost'
 
 const ohmTileServicesLists = {
   "production": [
-    "https://vtiles.openhistoricalmap.org/maps/osm/{z}/{x}/{y}.pbf",
+    "http://localhost:8082/maps/osm/{z}/{x}/{y}.pbf",
   ],
   "staging": [
-    "https://vtiles-staging.openhistoricalmap.org/maps/osm/{z}/{x}/{y}.pbf",
+    "http://localhost:8082/maps/osm/{z}/{x}/{y}.pbf",
   ],
 };
 
@@ -33,7 +33,7 @@ const ohmStyle = {
       "minzoom": 0,
       "maxzoom": 20,
       "layout": {"visibility": "visible"},
-      "paint": {"background-color": "rgba(144, 204, 203, 1)"}
+      "paint": {"background-color": "rgba(49.4, 87.1, 96.9, 1)"}
     },
     {
       "id": "land",
@@ -42,7 +42,7 @@ const ohmStyle = {
       "source-layer": "land",
       "minzoom": 0,
       "maxzoom": 24,
-      "paint": {"fill-color": "rgba(247, 246, 241, 1)"}
+      "paint": {"fill-color": "rgba(59.6, 67.5, 38.0, 1)"}
     },
     {
       "id": "airports",

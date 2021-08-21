@@ -19,12 +19,12 @@ L.OSM.Map = L.Map.extend({
     this.baseLayers = [];
 
     var ohmLayer = new L.MapboxGL({
-      attribution: "<a href='http://wiki.openstreetmap.org/wiki/OHM'>OHM</a>",
+      attribution: "<a href='http://wiki.openstreetmap.org/wiki/OHM'>xOHM</a>",
       code: "O",
       keyid: "historical",
       name: I18n.t("javascripts.map.base.historical"),
       style: ohmStyle,
-      accessToken: "no-token",
+      accessToken: "pk.eyJ1IjoianJ1dGlsYSIsImEiOiJjajhvbGVieTQwNGl5MndxYzY1NTdmcjhwIn0.zswODeSwJoGK10CrQCr1ww",
       minZoom: 2,  /* match to "L.OSM.Map" options in index.js */
       maxZoom: 20,  /* match to "L.OSM.Map" options in index.js */
     });
